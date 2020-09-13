@@ -1,0 +1,16 @@
+@baseUrl=http://localhost:3000
+@contentType=application/json
+
+### Create Company
+POST {{baseUrl}}/company
+Content-Type: {{contentType}}
+
+{
+  "name": "BuenoCorp",
+  "description": "This is my company.",
+  "owner": {
+    "name": "Lucas Bueno Cesário",
+    "email": "lbc92@hotmail.com",
+    "password": "12345678"
+  }
+}
