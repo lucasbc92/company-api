@@ -1,16 +1,81 @@
 @baseUrl=http://localhost:3000
 @contentType=application/json
+@tokenOwner=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNjAwMDI1MDAyLCJleHAiOjE2MDI2MTcwMDJ9.IKYst0se5NYepVcd020DHg-jAaBUpipLo_IoxKR0qUA
+@refreshTokenOwner=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNjAwMDI1MDAyLCJleHAiOjE2MDI2MTcwMDJ9.H9Z14-BHfImhBTOunJAtUUsIrnorEitlFj-xWM9qdsc
+@tokenUser=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjAwMDI0NjcwLCJleHAiOjE2MDI2MTY2NzB9.oIeH70rs-D0F-y_jcYzcCnZ3eRaHm3n770Mb6Y_wBYo
+@refreshTokenUser=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjAwMDI0NjcwLCJleHAiOjE2MDI2MTY2NzB9.xI2_plo3zAyEqrt86_OePyA_Qi6JwWd8fgtf2Fywfi4
 
-### Create Company
-POST {{baseUrl}}/company
+### Create User (Sign Up)
+POST {{baseUrl}}/auth/sign-up
 Content-Type: {{contentType}}
 
 {
-  "name": "BuenoCorp",
+    "name": "Aldair",
+    "email": "aldair@gmail.com",
+    "password": "12345678",
+    "password_confirmation": "12345678",
+    "idCompany": 1
+}
+
+### Login User Owner (Sign In)
+POST {{baseUrl}}/auth/sign-in
+Content-Type: {{contentType}}
+
+{
+  "email": "lbc92@hotmail.com",
+  "password": "12345678"
+}
+
+### Login User without being Owner (Sign In)
+POST {{baseUrl}}/auth/sign-in
+Content-Type: {{contentType}}
+
+{
+  "email": "marly@marly.com.br",
+  "password": "12345678"
+}
+
+### Refresh Token
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+Authorization: Bearer {{refreshTokenUser}}
+
+### Create Company
+POST {{baseUrl}}/create-company
+Content-Type: {{contentType}}
+
+{
+  "name": "BuenoCorp Y",
   "description": "This is my company.",
   "owner": {
-    "name": "Lucas Bueno Cesário",
-    "email": "lbc92@hotmail.com",
-    "password": "12345678"
+    "name": "Lucas Bueno Cesário 2",
+    "email": "lucasbcesario@hotmail.com",
+    "password": "12345678",
+    "password_confirmation": "12345678"
   }
 }
+
+### Edit Company
+PUT {{baseUrl}}/company/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{tokenUser}}
+
+{
+  "name": "LucasBueno Corp",
+  "description": "Testing description update."
+}
+
+### Edit User
+PUT {{baseUrl}}/user/5
+Content-Type: {{contentType}}
+Authorization: Bearer {{tokenOwner}}
+
+{
+  "name": "Zezinho",
+  "email": "ze@ze.com.br"
+}
+
+### Delete User
+DELETE {{baseUrl}}/user/5
+Content-Type: {{contentType}}
+Authorization: Bearer {{tokenOwner}}

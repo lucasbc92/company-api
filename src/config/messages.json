@@ -1,0 +1,34 @@
+{
+  "response.json_ok": "Requisição efetuada com sucesso.",
+  "response.json_bad_request": "Requisição inválida.",
+  "response.json_unauthorized": "Não autorizado.",
+  "response.json_not_found": "Página não encontrada.",
+  "response.json_server_error": "Erro no servidor.",
+
+  "company.create.success": "Empresa criada com sucesso.",
+  "company.create.email.not_unique" : "Email já cadastrado.",
+  
+  "company.update.success": "Empresa atualizada com sucesso.",
+
+  "user.signin.password.string.empty" : "Senha é obrigatória.",
+  "user.signin.password.string.min" : "Senha deve ter no mínimo 8 caracteres.",
+  "user.signin.email.string.empty" : "Email é obrigatório.",
+  "user.signin.email.string.email" : "Email inválido.",
+  "user.signin.invalid" : "Credenciais inválidas",
+  "user.signin.success" : "Login efetuado com sucesso.",
+
+  "user.signup.password_confirmation.any.required": "Confirmação de senha é obrigatória.",
+  "user.signup.password_confirmation.any.only": "As senhas não coincidem.",
+  "user.signup.password_confirmation.string.empty" : "Confirmação de senha é obrigatória.",
+  "user.signup.password.string.empty" : "Senha é obrigatória.",
+  "user.signup.email.string.empty" : "Email é obrigatório.",
+  "user.signup.email.string.email" : "Email inválido.",
+  "user.signup.password.string.min" : "Senha deve ter no mínimo 8 caracteres.",
+  "user.signup.email.not_unique" : "Email já cadastrado.",
+  "user.signup.success" : "Cadastro efetuado com sucesso.",
+
+  "user.update.email.not_unique" : "Email já cadastrado.",
+  "user.update.success" : "Usuário atualizado com sucesso.",
+
+  "user.delete.is_owner": "O usuário é dono de uma empresa e não pode ser removido."
+}

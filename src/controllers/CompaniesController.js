@@ -1,22 +1,28 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-undef */
 /* eslint-disable class-methods-use-this */
-
 const bcrypt = require('bcrypt');
 
+const { getMessage } = require('../helpers/messages');
+const db = require('../models');
 const { User, Company } = require('../models');
+const {
+  generateJwt,
+  generateRefreshJwt,
+} = require('../helpers/jwt');
 
 const saltRounds = 10;
 
 class CompaniesController {
-  async index(request, response) {
-    return response.json('Companies listed.');
-  }
+  // async index(request, response) {
+  //   return response.jsonOK(null, 'Companies listed.');
+  // }
 
-  async select(request, response) {
-    return response.json('Company selected.');
-  }
+  // async select(request, response) {
+  //   return response.jsonOK(null, 'Company selected.');
+  // }
 
   async create(request, response) {
-    // the creation of the company owner and the company itself are made in one transaction.
     const {
       name,
       description,
@@ -25,30 +31,57 @@ class CompaniesController {
 
     const hash = bcrypt.hashSync(owner.password, saltRounds);
 
-    // first, create the user that is the company owner.
-    // this is the only case that an user without a company is created.
-    const userOwner = await User.create({
-      name: owner.name,
-      email: owner.email,
-      password: hash,
-      idCompany: null,
-    });
+    // the creation of the company owner and the company itself are made in one transaction.
+    const trx = await db.sequelize.transaction();
 
-    // at last, create the company referencing the ID of the created user.
-    const company = await Company.create({
-      name,
-      description,
-      idOwner: userOwner.id,
-    });
+    let userOwner;
+    let company;
 
-    // update the company ID of the owner with the ID of the created company.
-    userOwner.idCompany = company.id;
-    userOwner.save();
+    try {
+      // first, create the user that is the company owner.
+      // this is the only case that an user without a company is created.
+      userOwner = await User.create({
+        name: owner.name,
+        email: owner.email,
+        password: hash,
+        idCompany: null,
+      }, { transaction: trx });
 
-    return response.json({
-      userOwner,
-      company,
-    });
+      // at last, create the company referencing the ID of the created user.
+      company = await Company.create({
+        name,
+        description,
+        idOwner: userOwner.id,
+      }, { transaction: trx });
+
+      // update the company ID of the owner with the ID of the created company.
+      userOwner.idCompany = company.id;
+      userOwner.save();
+
+      await trx.commit();
+    } catch (err) {
+      await trx.rollback();
+      if (err.name === 'SequelizeUniqueConstraintError') {
+        return response.jsonBadRequest(
+          null,
+          getMessage('company.create.email.not_unique'),
+        );
+      }
+      return response.jsonBadRequest(null, null, err);
+    }
+
+    // login the company owner
+    const token = generateJwt({ id: userOwner.id });
+    const refreshToken = generateRefreshJwt({ id: userOwner.id });
+
+    return response.jsonOK(
+      {
+        userOwner,
+        company,
+      },
+      getMessage('company.create.success'),
+      { token, refreshToken },
+    );
   }
 
   async update(request, response) {
@@ -56,7 +89,10 @@ class CompaniesController {
     const { idUser } = request;
 
     const { body } = request;
-    const fields = ['name', 'description', 'idOwner'];
+
+    // not sure if it should be possible to change the company owner...
+    // I'm considering that it isn't possible.
+    const fields = ['name', 'description'];
 
     // only the owner can update the company info
     const company = await Company.findOne({
@@ -66,16 +102,21 @@ class CompaniesController {
       },
     });
 
-    if (!company) return response.json('404 Not Found');
+    if (!company) return response.jsonNotFound(null);
 
-    fields.foreach((fieldName) => {
+    // verify if there's a new value for that field.
+    // if yes, then replace the old field value with newValue.
+    fields.map((fieldName) => {
       const newValue = body[fieldName];
       if (newValue !== undefined) company[fieldName] = newValue;
     });
 
-    await company.save(); // atualiza no banco
+    await company.save();
 
-    return response.json(company);
+    return response.jsonOK(
+      company,
+      getMessage('company.update.success'),
+    );
   }
 }
 
