@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'idCompany',
       allowNull: true,
     });
+    Company.hasMany(models.Role, {
+      foreignKey: 'idRole',
+    });
   };
 
   return Company;

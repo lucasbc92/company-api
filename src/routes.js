@@ -5,6 +5,7 @@ const { userSignInValidator, userSignUpValidator } = require('./validators/auth'
 const AuthController = require('./controllers/AuthController');
 const CompaniesController = require('./controllers/CompaniesController');
 const UsersController = require('./controllers/UsersController');
+const RolesController = require('./controllers/RolesController');
 
 const routes = express.Router();
 
@@ -22,5 +23,8 @@ routes.put('/company/:id', companiesController.update);
 const usersController = new UsersController();
 routes.put('/user/:id', usersController.update);
 routes.delete('/user/:id', usersController.delete);
+
+const rolesController = new RolesController();
+routes.post('/role', rolesController.create);
 
 module.exports = routes;

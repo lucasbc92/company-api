@@ -7,7 +7,7 @@
 
   "company.create.success": "Empresa criada com sucesso.",
   "company.create.email.not_unique" : "Email já cadastrado.",
-  
+
   "company.update.success": "Empresa atualizada com sucesso.",
 
   "user.signin.password.string.empty" : "Senha é obrigatória.",
@@ -30,5 +30,11 @@
   "user.update.email.not_unique" : "Email já cadastrado.",
   "user.update.success" : "Usuário atualizado com sucesso.",
 
-  "user.delete.is_owner": "O usuário é dono de uma empresa e não pode ser removido."
+  "user.delete.is_owner": "O usuário é dono de uma empresa e não pode ser removido.",
+
+  "role.create.is_not_owner" : "Apenas o dono da empresa pode criar papéis.",
+  "role.create.success" : "Papel criado com sucesso.",
+
+  "role.delete.is_not_owner" : "Apenas o dono da empresa pode apagar papéis.",
+  "role.delete.success" : "Papel apagado com sucesso."
 }

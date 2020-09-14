@@ -3,7 +3,9 @@
 /* eslint-disable class-methods-use-this */
 const { getMessage } = require('../helpers/messages');
 
-const { User, Company } = require('../models');
+const { ownerCheck } = require('../helpers/user');
+
+const { User } = require('../models');
 
 class UsersController {
   // async index(request, response) {
@@ -15,9 +17,8 @@ class UsersController {
   // }
 
   async update(request, response) {
-    // created this function to avoid cope replication
+    // created updateUser function to avoid code replication
     // it updates the user in the database.
-
     async function updateUser(user, body) {
       // if it's the company owner, then perform the update.
       const fields = ['name', 'email'];
@@ -58,26 +59,22 @@ class UsersController {
 
     const user = await User.findByPk(id);
 
-    // if the chosen user isn't the user itself,
-    if (idUser !== user.id) {
-      // only the user itself or the company owner can update the user info
-      const ownerCheck = await User.findOne({
-        include: [{
-          model: Company,
-          where: {
-            id: user.idCompany,
-            idOwner: idUser,
-          },
-        }],
-      });
+    if (!user) return response.jsonNotFound(null);
 
-      // then check if the current logged in user is the owner of the company of the chosen user.
-      if (ownerCheck) {
-        return updateUser(user, body);
-      }
-      return response.jsonNotFound(null);
-    } // if the chosen user is the user itself, then perform the update.
-    return updateUser(user, body);
+    // // if the chosen user is the user itself, then perform the update.
+    if (idUser === user.idUser) {
+      return updateUser(user, body);
+    }
+    // only the user itself or the company owner can update the user info
+    const isOwner = await ownerCheck(user.idCompany, idUser);
+
+    // then check if the current logged in user is the owner of the company of the chosen user.
+    // if yes, then perform the update
+    if (isOwner) {
+      return updateUser(user, body);
+    }
+    // if not, then don't perform the update
+    return response.jsonNotFound(null);
   }
 
   async delete(request, response) {
@@ -85,21 +82,15 @@ class UsersController {
     const { idUser } = request;
 
     let user;
-    let ownerCheck;
+    let isOwner;
 
     try {
       user = await User.findByPk(id);
 
+      if (!user) return response.jsonNotFound(null);
+
       // only the user itself or the company owner can delete the user info
-      ownerCheck = await User.findOne({
-        include: [{
-          model: Company,
-          where: {
-            id: user.idCompany,
-            idOwner: idUser,
-          },
-        }],
-      });
+      isOwner = await ownerCheck(user.idCompany, idUser);
     } catch (err) {
       return response.jsonNotFound(null);
     }
@@ -107,7 +98,7 @@ class UsersController {
     // if the chosen user is the user itself, then perform the deletion,
     // unless if it's a company owner.
     if (idUser === user.id) {
-      if (!ownerCheck) {
+      if (!isOwner) {
         const result = await user.destroy();
         return response.jsonOK(result);
       }

@@ -29,8 +29,8 @@ class AuthController {
       );
     }
 
-    const token = generateJwt({ id: user.id });
-    const refreshToken = generateRefreshJwt({ id: user.id });
+    const token = generateJwt({ id: user.idUser });
+    const refreshToken = generateRefreshJwt({ id: user.idUser });
 
     return response.jsonOK(
       user,
@@ -71,8 +71,8 @@ class AuthController {
         err.name,
       );
     }
-    const token = generateJwt({ id: newUser.id });
-    const refreshToken = generateRefreshJwt({ id: newUser.id });
+    const token = generateJwt({ id: newUser.idUser });
+    const refreshToken = generateRefreshJwt({ id: newUser.idUser });
 
     return response.jsonOK(
       newUser,

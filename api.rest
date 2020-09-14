@@ -1,9 +1,25 @@
 @baseUrl=http://localhost:3000
 @contentType=application/json
-@tokenOwner=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNjAwMDI1MDAyLCJleHAiOjE2MDI2MTcwMDJ9.IKYst0se5NYepVcd020DHg-jAaBUpipLo_IoxKR0qUA
-@refreshTokenOwner=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNjAwMDI1MDAyLCJleHAiOjE2MDI2MTcwMDJ9.H9Z14-BHfImhBTOunJAtUUsIrnorEitlFj-xWM9qdsc
-@tokenUser=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjAwMDI0NjcwLCJleHAiOjE2MDI2MTY2NzB9.oIeH70rs-D0F-y_jcYzcCnZ3eRaHm3n770Mb6Y_wBYo
+@tokenOwner=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjAwMTE1MzA2LCJleHAiOjE2MDI3MDczMDZ9.SfKMtN39bw8O3eQTMe3k4Cg4AiPay69TG7_c6aAgj8s
+@tokenUser=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjAwMTE0MDQxLCJleHAiOjE2MDI3MDYwNDF9.BGDVUEr-00hJ7pZ1DWma-JhCCjAM8VP_85CxBcejOss
+@refreshTokenOwner=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjAwMTEyOTk2LCJleHAiOjE2MDI3MDQ5OTZ9.40ilnppsE49jWg6XRZgICZgApZzkXUnvJq2ApW2kB9A
+
 @refreshTokenUser=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNjAwMDI0NjcwLCJleHAiOjE2MDI2MTY2NzB9.xI2_plo3zAyEqrt86_OePyA_Qi6JwWd8fgtf2Fywfi4
+
+### Create Company
+POST {{baseUrl}}/create-company
+Content-Type: {{contentType}}
+
+{
+  "name": "JoaoCorp",
+  "description": "Testtestest",
+  "owner": {
+    "name": "João Bueno Cesário",
+    "email": "joao@gmail.com",
+    "password": "12345678",
+    "password_confirmation": "12345678"
+  }
+}
 
 ### Create User (Sign Up)
 POST {{baseUrl}}/auth/sign-up
@@ -22,7 +38,7 @@ POST {{baseUrl}}/auth/sign-in
 Content-Type: {{contentType}}
 
 {
-  "email": "lbc92@hotmail.com",
+  "email": "lucas@gmail.com",
   "password": "12345678"
 }
 
@@ -31,7 +47,7 @@ POST {{baseUrl}}/auth/sign-in
 Content-Type: {{contentType}}
 
 {
-  "email": "marly@marly.com.br",
+  "email": "ze@gmail.com.br",
   "password": "12345678"
 }
 
@@ -40,25 +56,10 @@ POST {{baseUrl}}/auth/refresh
 Content-Type: {{contentType}}
 Authorization: Bearer {{refreshTokenUser}}
 
-### Create Company
-POST {{baseUrl}}/create-company
-Content-Type: {{contentType}}
-
-{
-  "name": "BuenoCorp Y",
-  "description": "This is my company.",
-  "owner": {
-    "name": "Lucas Bueno Cesário 2",
-    "email": "lucasbcesario@hotmail.com",
-    "password": "12345678",
-    "password_confirmation": "12345678"
-  }
-}
-
 ### Edit Company
 PUT {{baseUrl}}/company/1
 Content-Type: {{contentType}}
-Authorization: Bearer {{tokenUser}}
+Authorization: Bearer {{tokenOwner}}
 
 {
   "name": "LucasBueno Corp",
@@ -71,11 +72,21 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{tokenOwner}}
 
 {
-  "name": "Zezinho",
-  "email": "ze@ze.com.br"
+  "name": "Zé",
+  "email": "ze@gmail.com.br"
 }
 
 ### Delete User
 DELETE {{baseUrl}}/user/5
 Content-Type: {{contentType}}
 Authorization: Bearer {{tokenOwner}}
+
+### Create Role
+POST {{baseUrl}}/role
+Content-Type: {{contentType}}
+Authorization: Bearer {{tokenOwner}}
+
+{
+  "name": "HUE",
+  "description": "Chefe filosófico da empresa."
+}

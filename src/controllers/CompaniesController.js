@@ -51,7 +51,7 @@ class CompaniesController {
       company = await Company.create({
         name,
         description,
-        idOwner: userOwner.id,
+        idOwner: userOwner.idUser,
       }, { transaction: trx });
 
       // update the company ID of the owner with the ID of the created company.
@@ -67,12 +67,12 @@ class CompaniesController {
           getMessage('company.create.email.not_unique'),
         );
       }
-      return response.jsonBadRequest(null, null, err);
+      return response.jsonBadRequest(null, err.name);
     }
 
     // login the company owner
-    const token = generateJwt({ id: userOwner.id });
-    const refreshToken = generateRefreshJwt({ id: userOwner.id });
+    const token = generateJwt({ id: userOwner.idUser });
+    const refreshToken = generateRefreshJwt({ id: userOwner.idUser });
 
     return response.jsonOK(
       {

@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
+    idUser: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -27,8 +32,14 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'idCompany',
       allowNull: true,
     });
+    User.belongsToMany(models.Role, {
+      through: 'User_Roles',
+      foreignKey: 'idUser',
+      otherKey: 'idRole',
+    });
   };
 
+  // to not show the password when retrieving an user;
   User.prototype.toJSON = function removePassword() {
     const values = { ...this.get() };
     delete values.password;
